@@ -1,3 +1,4 @@
+print('train_adda.py start')
 import os
 from os.path import join
 
