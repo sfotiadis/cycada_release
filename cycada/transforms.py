@@ -1,3 +1,4 @@
+import logging
 """These random transforms extend the transforms provided in torchvision to
 allow for transforming multiple images at the same time. This ensures that the
 images receive the same transformation, e.g. the provided images are either all
@@ -34,7 +35,7 @@ class RandomCrop(object):
             if h is None and w is None:
                 _, h, w = tensor.size()
             elif tensor.size()[-2:] != (h, w):
-                print(tensor.size(), (h, w))
+                logging.info('%s %s %s' % (tensor.size(), h, w))
                 raise ValueError('Images must be same size')
         if w == tw and h == th:
             return tensors

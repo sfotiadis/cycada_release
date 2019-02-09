@@ -1,4 +1,5 @@
 from __future__ import print_function
+import logging
 
 import os
 from os.path import join
@@ -110,7 +111,7 @@ def train(loader_src, loader_tgt, net, opt_net, opt_dis, epoch):
         # Logging #
         ###########
         if batch_idx % log_interval == 0:
-            print(info_str)
+            logging.info(info_str)
 
     return last_update
 
@@ -136,8 +137,8 @@ def train_adda(src, tgt, model, num_cls, num_epoch=200,
             src_weights_init=src_weights)
     
     # print network and arguments
-    print(net)
-    print('Training Adda {} model for {}->{}'.format(model, src, tgt))
+    logging.info(net)
+    logging.info('Training Adda {} model for {}->{}'.format(model, src, tgt))
 
     #######################################
     # Setup data for training and testing #
@@ -164,7 +165,7 @@ def train_adda(src, tgt, model, num_cls, num_epoch=200,
     for epoch in range(num_epoch):
         err = train(train_src_data, train_tgt_data, net, opt_net, opt_dis, epoch) 
         if err == -1:
-            print("No suitable discriminator")
+            logging.info("No suitable discriminator")
             break
        
     ##############
@@ -173,6 +174,6 @@ def train_adda(src, tgt, model, num_cls, num_epoch=200,
     os.makedirs(outdir, exist_ok=True)
     outfile = join(outdir, 'adda_{:s}_net_{:s}_{:s}.pth'.format(
         model, src, tgt))
-    print('Saving to', outfile)
+    logging.info('Saving to', outfile)
     net.save(outfile)
 

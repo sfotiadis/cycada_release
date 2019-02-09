@@ -208,7 +208,7 @@ class Discriminator(nn.Module):
         return d_score
 
     def load_weights(self, weights):
-        print('Loading discriminator weights')
+        logging.info('Loading discriminator weights')
         self.load_state_dict(torch.load(weights))
    
 

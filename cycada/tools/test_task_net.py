@@ -1,4 +1,5 @@
 from __future__ import print_function
+import logging
 from os.path import join
 import argparse
 import torch
@@ -41,7 +42,7 @@ def test(loader, net):
         #cm += confusion_matrix(target.data.cpu().numpy(), pred.cpu().numpy())
         
     test_loss /= len(loader) # loss function already averages over batch size
-    print('[Evaluate] Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
+    logging.info('[Evaluate] Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
         test_loss, correct, N, 100. * correct / N))
     return cm
 
@@ -68,6 +69,6 @@ def load_and_test_net(data, datadir, weights, model, num_cls,
         rootdir=datadir, num_channels=net.num_channels, 
         image_size=net.image_size, download=True, kwargs=kwargs)
     if test_data is None:
-        print('skipping test')
+        logging.info('skipping test')
     else:
         return test(test_data, net)

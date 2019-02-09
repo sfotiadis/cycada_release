@@ -1,3 +1,4 @@
+import logging
 import os
 from os.path import join
 import glob
@@ -46,7 +47,7 @@ class Svhn2MNIST(CycleGANDataset):
     def __init__(self, root, train=True, transform=None, target_transform=None, 
             download=False):
         if not train:
-            print('No test set for svhn2mnist.')
+            logging.info('No test set for svhn2mnist.')
             self.image_paths = []
         else:
             super(Svhn2MNIST, self).__init__(root, '*_fake_B.png',
@@ -78,7 +79,7 @@ class Usps2Mnist(CycleGANDataset):
     def __init__(self, root, train=True, transform=None, target_transform=None, 
             download=False):
         if not train:
-            print('No test set for usps2mnist.')
+            logging.info('No test set for usps2mnist.')
             self.image_paths = []
         else:
             super(Usps2Mnist, self).__init__(root, '*_fake_A.png',
@@ -102,7 +103,7 @@ class Mnist2Usps(CycleGANDataset):
     def __init__(self, root, train=True, transform=None, target_transform=None, 
             download=False):
         if not train:
-            print('No test set for mnist2usps.')
+            logging.info('No test set for mnist2usps.')
             self.image_paths = []
         else:
             super(Mnist2Usps, self).__init__(root, '*_fake_B.png',

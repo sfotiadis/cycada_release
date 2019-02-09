@@ -29,12 +29,12 @@ def check_label(label, num_cls):
     label_classes = np.unique(label.numpy().flatten())
     label_classes = label_classes[label_classes < 255]
     if len(label_classes) == 0:
-        print('All ignore labels')
+        logging.info('All ignore labels')
         return False
     class_too_large = label_classes.max() > num_cls
     if class_too_large or label_classes.min() < 0:
-        print('Labels out of bound')
-        print(label_classes)
+        logging.info('Labels out of bound')
+        logging.info(label_classes)
         return False
     return True
 
@@ -130,7 +130,7 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
 
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu
     config_logging()
-    print('Train Discrim Only', train_discrim_only)
+    logging.info('Train Discrim Only', train_discrim_only)
     net = get_model(model, num_cls=num_cls, pretrained=True, weights_init=weights_init,
             output_last_ft=discrim_feat)
     if weights_shared:
@@ -142,8 +142,8 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
 
     odim = 1 if lsgan else 2
     idim = num_cls if not discrim_feat else 4096
-    print('discrim_feat', discrim_feat, idim)
-    print('discriminator init weights: ', weights_discrim)
+    logging.info('discrim_feat', discrim_feat, idim)
+    logging.info('discriminator init weights: ', weights_discrim)
     discriminator = Discriminator(input_dim=idim, output_dim=odim, 
             pretrained=not (weights_discrim==None), 
             weights_init=weights_discrim).cuda()
@@ -151,7 +151,7 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
     loader = AddaDataLoader(net.transform, dataset, datadir, downscale, 
             crop_size=crop_size, half_crop=half_crop,
             batch_size=batch, shuffle=True, num_workers=2)
-    print('dataset', dataset)
+    logging.info('dataset', dataset)
 
     # Class weighted loss?
     if cls_weights is not None:
@@ -176,7 +176,7 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
     intersections = np.zeros([100,num_cls])
     unions = np.zeros([100, num_cls])
     accuracy = deque(maxlen=100)
-    print('max iter:', max_iter)
+    logging.info('max iter:', max_iter)
    
     net.train()
     discriminator.train()
@@ -269,7 +269,7 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
                 last_update_g = iteration
                 num_update_g += 1 
                 if num_update_g % 1 == 0:
-                    print('Updating G with adversarial loss ({:d} times)'.format(num_update_g))
+                    logging.info('Updating G with adversarial loss ({:d} times)'.format(num_update_g))
 
                 # zero out optimizer gradients
                 opt_dis.zero_grad()
@@ -306,7 +306,7 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
                
             if (not train_discrim_only) and weights_shared and (np.mean(accuracies_dom) > dom_acc_thresh):
                
-                print('Updating G using source supervised loss.')
+                logging.info('Updating G using source supervised loss.')
 
                 # zero out optimizer gradients
                 opt_dis.zero_grad()
@@ -377,7 +377,7 @@ def main(output, dataset, datadir, lr, momentum, snapshot, downscale, cls_weight
                         '{}/discriminator-iter{}.pth'.format(output, iteration))
 
             if iteration - last_update_g >= len(loader):
-                print('No suitable discriminator found -- returning.')
+                logging.info('No suitable discriminator found -- returning.')
                 torch.save(net.state_dict(), 
                         '{}/net-iter{}.pth'.format(output, iteration))
                 iteration = max_iter # make sure outside loop breaks

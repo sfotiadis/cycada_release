@@ -1,3 +1,4 @@
+import logging
 class Rotater(object):
 
     def __init__(self, dataset, orientations=6, transform=None,

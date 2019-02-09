@@ -116,7 +116,7 @@ class DRN(nn.Module):
                  weights_init=None, pretrained=True, finetune=False,
                  output_last_ft=False, modelname='drn26'):
         if output_last_ft:
-            print('DRN discrim feat not implemented, using scores')
+            logging.info('DRN discrim feat not implemented, using scores')
 
         super(DRN, self).__init__()
         self.inplanes = channels[0]
@@ -161,7 +161,7 @@ class DRN(nn.Module):
         if pretrained:
             if not weights_init is None:
                 state_dict = torch.load(weights_init)
-                print('Using state dict from', weights_init)
+                logging.info('Using state dict from %s'% weights_init)
             else:
                 state_dict = model_zoo.load_url(model_urls[modelname])
             
@@ -169,10 +169,10 @@ class DRN(nn.Module):
                 del state_dict['fc.weight']
                 del state_dict['fc.bias']
                 safe_load_state_dict(self, state_dict)
-                print('Finetune: remove last layer')
+                logging.info('Finetune: remove last layer')
             else:
                 self.load_state_dict(state_dict)
-                print('Loading full model')
+                logging.info('Loading full model')
        
 
     def _make_layer(self, block, planes, blocks, stride=1, dilation=1,

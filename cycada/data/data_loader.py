@@ -1,4 +1,5 @@
 from __future__ import print_function
+import logging
 import os
 from os.path import join
 import numpy as np
@@ -79,7 +80,7 @@ def get_transform(params, image_size, num_channels):
         elif num_channels == 3:
             transform.append(Gray2RGB)
         else:
-            print('NumChannels should be 1 or 3', num_channels)
+            logging.info('NumChannels should be 1 or 3 %s' % num_channels)
             raise Exception
 
     transform += [transforms.ToTensor(), 
@@ -139,7 +140,7 @@ class DatasetParams(object):
 
 def get_dataset(name, rootdir, dset, image_size, num_channels, download=True):
     is_train = (dset == 'train')
-    print('get dataset:', name, rootdir, dset)
+    logging.info('get dataset: %s %s %s' % (name, rootdir, dset))
     params = data_params[name] 
     transform = get_transform(params, image_size, num_channels)
     target_transform = get_target_transform(params)

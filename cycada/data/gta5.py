@@ -1,3 +1,4 @@
+import logging
 import os.path
 
 from .cityscapes import remap_labels_to_train_ids

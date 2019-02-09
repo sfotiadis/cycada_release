@@ -1,4 +1,3 @@
-print('train_adda.py start')
 import os
 from os.path import join
 
@@ -7,6 +6,9 @@ from cycada.tools.test_task_net import load_and_test_net
 from cycada.tools.train_adda_net import train_adda
 import torch
 import numpy as np
+
+import logging
+logging.basicConfig(format='%(message)s',level=logging.INFO)
 
 # set random seed to 4325 
 # to reproduce the exact numbers
@@ -53,9 +55,9 @@ adda_net_file = join(outdir, 'adda_{:s}_net_{:s}_{:s}.pth'
 #######################
 # 1. Train Source Net #
 #######################
-print('src_datadir %s' %src_datadir)
+logging.info('src_datadir %s' %src_datadir)
 if os.path.exists(src_net_file):
-    print('Skipping source net training, exists:', src_net_file)
+    logging.info('Skipping source net training, exists: %s' % src_net_file)
 else:
     train_source(src, src_datadir, model, num_cls, 
             outdir=outdir, num_epoch=src_num_epoch, batch=batch, 
@@ -67,7 +69,7 @@ else:
 #####################
 
 if os.path.exists(adda_net_file):
-    print('Skipping adda training, exists:', adda_net_file)
+    logging.info('Skipping adda training, exists: %s' % adda_net_file)
 else:
     train_adda(src, tgt, model, num_cls, num_epoch=adda_num_epoch, 
             batch=batch, datadir=datadir,
@@ -78,26 +80,26 @@ else:
 # 3. Evalute source and adda #
 ##############################
 tgt_datadir = join(datadir, tgt)
-print()
+logging.info()
 if src == base_src:
-    print('----------------')
-    print('Test set:', src)
-    print('----------------')
-    print('Evaluating {} source model: {}'.format(src, src_net_file))
+    logging.info('----------------')
+    logging.info('Test set: %s' % src)
+    logging.info('----------------')
+    logging.info('Evaluating {} source model: {}'.format(src, src_net_file))
     load_and_test_net(src, src_datadir, src_net_file, model, num_cls, 
             dset='test', base_model=None)
 
 
-print('----------------')
-print('Test set:', tgt)
-print('----------------')
-print('Evaluating {} source model: {}'.format(src, src_net_file))
+logging.info('----------------')
+logging.info('Test set: %s' % tgt)
+logging.info('----------------')
+logging.info('Evaluating {} source model: {}'.format(src, src_net_file))
 cm = load_and_test_net(tgt, tgt_datadir, src_net_file, model, num_cls, 
         dset='test', base_model=None)
 
-print(cm)
+logging.info(cm)
 
-print('Evaluating {}->{} adda model: {}'.format(src, tgt, adda_net_file))
+logging.info('Evaluating {}->{} adda model: {}'.format(src, tgt, adda_net_file))
 cm = load_and_test_net(tgt, tgt_datadir, adda_net_file, 'AddaNet', num_cls, 
         dset='test', base_model=model)
-print(cm)
+logging.info(cm)

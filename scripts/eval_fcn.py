@@ -1,3 +1,4 @@
+import logging
 import os
 from tqdm import *
 
@@ -54,7 +55,7 @@ def main(path, dataset, datadir, model, gpu, num_cls):
     errs = []
     hist = np.zeros((num_cls, num_cls))
     if len(loader) == 0:
-        print('Empty data loader')
+        logging.info('Empty data loader')
         return
     iterations = tqdm(enumerate(loader))
     for im_i, (im, label) in iterations:
@@ -67,12 +68,12 @@ def main(path, dataset, datadir, model, gpu, num_cls):
         acc_overall, acc_percls, iu, fwIU = result_stats(hist)
         iterations.set_postfix({'mIoU':' {:0.2f}  fwIoU: {:0.2f} pixel acc: {:0.2f} per cls acc: {:0.2f}'.format(
             np.nanmean(iu), fwIU, acc_overall, np.nanmean(acc_percls))})
-    print()
-    print(','.join(classes))
-    print(fmt_array(iu))
-    print(np.nanmean(iu), fwIU, acc_overall, np.nanmean(acc_percls))
-    print()
-    print('Errors:', errs)
+    logging.info()
+    logging.info(','.join(classes))
+    logging.info(fmt_array(iu))
+    logging.info('%s %s %s %s', % (np.nanmean(iu), fwIU, acc_overall, np.nanmean(acc_percls)))
+    logging.info()
+    logging.info('Errors: %s'% errs)
 
 if __name__ == '__main__':
     main()

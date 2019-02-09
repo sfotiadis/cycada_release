@@ -1,3 +1,4 @@
+import logging
 import gzip
 import os.path
 

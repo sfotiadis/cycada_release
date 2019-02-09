@@ -1,4 +1,5 @@
 from __future__ import print_function
+import logging
 
 import os
 from os.path import join
@@ -43,14 +44,12 @@ def train_epoch(loader, net, opt_net, epoch):
        
         # Logging
         if batch_idx % log_interval == 0:
-            print('[Train] Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx * len(data), len(loader.dataset),
-                100. * batch_idx / len(loader), loss.item()), end="")
             pred = score.data.max(1)[1]
             correct = pred.eq(target.data).cpu().sum()
             acc = correct.item() / len(pred) * 100.0
-            print('  Acc: {:.2f}'.format(acc))
-
+            logging.info('[Train] Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f} Acc: {:.2f}'.format(
+                epoch, batch_idx * len(data), len(loader.dataset),
+                100. * batch_idx / len(loader), loss.item(), acc))
 
 def train(data, datadir, model, num_cls, outdir='', 
         num_epoch=100, batch=128, 
@@ -67,13 +66,13 @@ def train(data, datadir, model, num_cls, outdir='',
     # Load Net #
     ############
     net = get_model(model, num_cls=num_cls)
-    print('-------Training net--------')
-    print(net)
+    logging.info('-------Training net--------')
+    logging.info(net)
 
     ############################
     # Load train and test data # 
     ############################
-    print('datadir %s' % datadir)
+    logging.info('datadir %s' % datadir)
     train_data = load_data(data, 'train', batch=batch, 
         rootdir=datadir, num_channels=net.num_channels, 
         image_size=net.image_size, download=True, kwargs=kwargs)
@@ -91,7 +90,7 @@ def train(data, datadir, model, num_cls, outdir='',
     #########
     # Train #
     #########
-    print('Training {} model for {}'.format(model, data))
+    logging.info('Training {} model for {}'.format(model, data))
     for epoch in range(num_epoch):
         train_epoch(train_data, net, opt_net, epoch)
     
@@ -99,7 +98,7 @@ def train(data, datadir, model, num_cls, outdir='',
     # Test #
     ########
     if test_data is not None:
-        print('Evaluating {}-{} model on {} test set'.format(model, data, data))
+        logging.info('Evaluating {}-{} model on {} test set'.format(model, data, data))
         test(test_data, net)
 
     ############
@@ -107,7 +106,7 @@ def train(data, datadir, model, num_cls, outdir='',
     ############
     os.makedirs(outdir, exist_ok=True)
     outfile = join(outdir, '{:s}_net_{:s}.pth'.format(model, data))
-    print('Saving to', outfile)
+    logging.info('Saving to', outfile)
     net.save(outfile)
 
     return net

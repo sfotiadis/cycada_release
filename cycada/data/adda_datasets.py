@@ -1,3 +1,4 @@
+import logging
 import os.path
 
 from PIL import Image
@@ -25,7 +26,7 @@ class AddaDataLoader(object):
                 net_transform, downscale) 
         self.target = get_transform_dataset(self.dataset[1], targetdir, 
                 net_transform, downscale)
-        print('Source length:', len(self.source), 'Target length:', len(self.target))
+        logging.info('Source length: %s Target length: %s' % (len(self.source),len(self.target)))
         self.n = max(len(self.source), len(self.target)) # make sure you see all images
         self.num = 0
         self.set_loader_src()
@@ -39,10 +40,10 @@ class AddaDataLoader(object):
 
     def next(self):
         if self.num % len(self.iters_src) == 0:
-            print('restarting source dataset')
+            logging.info('restarting source dataset')
             self.set_loader_src()
         if self.num % len(self.iters_tgt) == 0:
-            print('restarting target dataset')
+            logging.info('restarting target dataset')
             self.set_loader_tgt()
 
         img_src, label_src = next(self.iters_src)
