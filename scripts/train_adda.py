@@ -14,7 +14,7 @@ np.random.seed(4325)
 ###################################
 # Set to your preferred data path #
 ###################################
-datadir = '/x/jhoffman'
+datadir = 'datasets'
 ###################################
 
 # Choose GPU ID
@@ -52,6 +52,8 @@ adda_net_file = join(outdir, 'adda_{:s}_net_{:s}_{:s}.pth'
 #######################
 # 1. Train Source Net #
 #######################
+print('src_datadir %s' %src_datadir)
+stop;
 if os.path.exists(src_net_file):
     print('Skipping source net training, exists:', src_net_file)
 else:
