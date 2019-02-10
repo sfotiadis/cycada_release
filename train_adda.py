@@ -80,7 +80,6 @@ else:
 # 3. Evalute source and adda #
 ##############################
 tgt_datadir = join(datadir, tgt)
-logging.info()
 if src == base_src:
     logging.info('----------------')
     logging.info('Test set: %s' % src)
