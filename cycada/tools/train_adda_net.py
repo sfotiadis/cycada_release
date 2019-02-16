@@ -176,7 +176,7 @@ def train_adda(src, tgt, model, num_cls, num_epoch=200,
         model, src, tgt))
     logging.info('Saving to %s' % outfile)
     net.save(outfile)
-    outfile = join(outdir, 'adda_{:s}_only_net_{:s}_{:s}.pth'.format(
+    outfile = join(outdir, 'target_{:s}__{:s}_{:s}.pth'.format(
         model, src, tgt))
-    net.base_model.save(outfile)
+    net.tgt_net.save(outfile)
 
