@@ -30,7 +30,7 @@ class AddaNet(nn.Module):
     def forward(self, x_s, x_t):
         """Pass source and target images through their
         respective networks."""
-        score_s, x_s = self.src_net(x_s, with_ft=True)
+        score_s, x_s = self.src_net(x_s, with_ft=True) # x_s and x_t are the latent feature representation of the image
         score_t, x_t = self.tgt_net(x_t, with_ft=True)
 
         if self.discrim_feat:
